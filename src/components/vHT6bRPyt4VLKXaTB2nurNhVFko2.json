@@ -1,0 +1,439 @@
+{
+  "hospital": {
+    "id": "medivista2025",
+    "name": "MediVista Multispecialty Hospital",
+    "tagline": "Compassionate Care. Advanced Medicine.",
+    "established": 2008,
+    "type": "Multispecialty Tertiary Care Hospital",
+    "accreditation": ["NABH Accredited", "ISO 9001:2015 Certified", "JCI Standards Compliant"],
+    "description": "MediVista Multispecialty Hospital is a 650-bed tertiary care facility located in the heart of Kochi, Kerala. Renowned for its patient-first philosophy, MediVista offers world-class diagnostics, surgical expertise, and digital health integration. The hospital serves over 1,200 outpatients daily and houses 18 clinical specialties under one roof.",
+    "contact": {
+      "phone": "+91 484 300 5000",
+      "emergency": "+91 484 300 5999",
+      "email": "care@medivistahospital.in",
+      "website": "https://www.medivistahospital.in"
+    },
+    "address": {
+      "street": "12, Seabreeze Medical Complex, NH-66 Bypass",
+      "city": "Kochi",
+      "state": "Kerala",
+      "pincode": "682021",
+      "india": true
+    },
+    "timings": {
+      "outpatient": "08:00 - 20:00 (Monday to Saturday), 09:00 - 14:00 (Sunday)",
+      "emergency": "24 x 7",
+      "pharmacy": "07:00 - 22:00 (Daily)",
+      "laboratory": "06:30 - 21:00 (Daily)",
+      "radiology": "08:00 - 20:00 (Daily, Emergency scans 24x7)",
+      "visiting_hours": "16:00 - 18:00 (Evening), 10:00 - 12:00 (Morning)"
+    },
+    "administration": [
+      {
+        "role": "Medical Director",
+        "name": "Dr. Suresh Menon",
+        "specialization": "Cardiothoracic Surgery",
+        "bio": "Over 25 years of experience in cardiac care and hospital administration."
+      },
+      {
+        "role": "Chief of Medical Operations",
+        "name": "Dr. Priya Nair",
+        "specialization": "Internal Medicine",
+        "bio": "Pioneer in implementing digital health records and telemedicine at MediVista."
+      },
+      {
+        "role": "Head of Nursing",
+        "name": "Ms. Leena Thomas",
+        "bio": "Senior nursing professional with 20 years of ICU and surgical nursing experience."
+      },
+      {
+        "role": "Hospital Administrator",
+        "name": "Mr. Rahul Krishnan",
+        "bio": "Manages hospital operations, patient services, and infrastructure development."
+      }
+    ]
+  },
+
+  "floors": [
+    {
+      "id": "ground",
+      "name": "Ground Floor",
+      "description": "Primary patient-facing floor handling walk-in and emergency services.",
+      "departments": [
+        "Emergency & Trauma",
+        "Outpatient Registration & Reception",
+        "General OPD",
+        "Pharmacy",
+        "Cafeteria & Patient Lounge",
+        "Billing & Insurance Helpdesk",
+        "Ambulance Bay"
+      ]
+    },
+    {
+      "id": "first",
+      "name": "First Floor",
+      "description": "Houses specialist OPD clinics and diagnostics.",
+      "departments": [
+        "Cardiology OPD",
+        "Neurology OPD",
+        "Orthopedics OPD",
+        "ENT OPD",
+        "Dermatology & Cosmetology OPD",
+        "Radiology & Imaging (X-ray, CT, MRI)",
+        "Ultrasound & Mammography"
+      ]
+    },
+    {
+      "id": "second",
+      "name": "Second Floor",
+      "description": "Dedicated to women's health, pediatrics, and diagnostics.",
+      "departments": [
+        "Obstetrics & Gynaecology OPD",
+        "Paediatrics & Neonatology OPD",
+        "Fertility & IVF Clinic",
+        "Clinical Laboratory (Blood Tests, Pathology)",
+        "Pulmonology & Respiratory OPD",
+        "Endocrinology & Diabetes OPD",
+        "Dietetics & Nutrition Counselling"
+      ]
+    },
+    {
+      "id": "third",
+      "name": "Third Floor",
+      "description": "Surgical suites and pre/post-operative care.",
+      "departments": [
+        "Operation Theatres (6 Modular OTs)",
+        "Pre-operative Assessment Unit",
+        "Post-operative Recovery Ward",
+        "Day Care Surgery Unit",
+        "Laparoscopic & Robotic Surgery Centre",
+        "Anaesthesiology Department"
+      ]
+    },
+    {
+      "id": "fourth",
+      "name": "Fourth Floor",
+      "description": "Critical care and intensive monitoring units.",
+      "departments": [
+        "Medical ICU (MICU) - 20 Beds",
+        "Surgical ICU (SICU) - 15 Beds",
+        "Cardiac ICU (CICU) - 12 Beds",
+        "Neonatal ICU (NICU) - 10 Beds",
+        "Paediatric ICU (PICU) - 8 Beds",
+        "High Dependency Unit (HDU)"
+      ]
+    },
+    {
+      "id": "fifth",
+      "name": "Fifth Floor",
+      "description": "General and private inpatient wards.",
+      "departments": [
+        "General Wards (Male & Female)",
+        "Semi-Private Rooms",
+        "Private Rooms",
+        "Suite Rooms",
+        "Physiotherapy & Rehabilitation Centre",
+        "Occupational Therapy Unit"
+      ]
+    },
+    {
+      "id": "sixth",
+      "name": "Sixth Floor",
+      "description": "Premium inpatient suites and oncology unit.",
+      "departments": [
+        "Oncology Ward",
+        "Chemotherapy Day Care",
+        "Deluxe & Presidential Suites",
+        "Palliative Care Unit",
+        "Medical Social Work Office"
+      ]
+    }
+  ],
+
+  "departments": {
+    "outpatient": {
+      "id": "opd",
+      "name": "Outpatient Department (OPD)",
+      "floor": "Ground Floor (General OPD) and First & Second Floors (Specialist Clinics)",
+      "description": "MediVista's OPD handles over 1,200 consultations daily across 18 specialties. Walk-in patients are registered at the Ground Floor reception. Specialist consultations are available by prior appointment on the First and Second Floors.",
+      "how_to_reach": "Enter through the main entrance on NH-66 Bypass. The OPD Registration counter is immediately to the right of the main lobby.",
+      "timings": "08:00 - 20:00 (Mon-Sat), 09:00 - 14:00 (Sunday)",
+      "contact": "+91 484 300 5001"
+    },
+    "emergency": {
+      "id": "emergency",
+      "name": "Emergency & Trauma Department",
+      "floor": "Ground Floor, East Wing",
+      "description": "MediVista's 24x7 Emergency Department is equipped with 30 emergency bays, a dedicated trauma resuscitation unit, and a rapid response team. It is accessible directly from the ambulance bay on the East side of the hospital.",
+      "how_to_reach": "The Emergency entrance is on the East Wing of the Ground Floor, clearly marked with red signage and accessible from the side road off NH-66 Bypass. Ambulance Bay is adjacent.",
+      "timings": "24 Hours, 7 Days a Week",
+      "contact": "+91 484 300 5999"
+    },
+    "radiology": {
+      "id": "radiology",
+      "name": "Radiology & Imaging Department",
+      "floor": "First Floor, North Wing",
+      "description": "The department is equipped with a 3 Tesla MRI, 128-slice CT scanner, digital X-ray units, ultrasound machines, mammography, and a DEXA bone densitometry scanner. A radiologist is available on-site 24x7 for emergency imaging.",
+      "services": [
+        "X-Ray (Digital)",
+        "CT Scan (128-slice)",
+        "MRI (3 Tesla)",
+        "Ultrasound & Doppler",
+        "Mammography",
+        "DEXA Scan",
+        "Fluoroscopy",
+        "Interventional Radiology"
+      ],
+      "how_to_reach": "Take the elevator or staircase to the First Floor. Follow the blue 'Radiology' signage towards the North Wing.",
+      "timings": "08:00 - 20:00 (Routine), Emergency scans 24x7",
+      "contact": "+91 484 300 5010"
+    },
+    "laboratory": {
+      "id": "laboratory",
+      "name": "Clinical Laboratory & Pathology",
+      "floor": "Second Floor, South Wing",
+      "description": "MediVista's NABL-accredited laboratory processes over 2,000 samples daily covering biochemistry, haematology, microbiology, histopathology, and molecular diagnostics. Home sample collection is also available.",
+      "services": [
+        "Complete Blood Count (CBC)",
+        "Blood Sugar (Fasting, PP, HbA1c)",
+        "Lipid Profile",
+        "Liver & Kidney Function Tests",
+        "Thyroid Profile",
+        "Urine & Stool Analysis",
+        "Blood Culture & Sensitivity",
+        "Histopathology & Biopsy",
+        "PCR & Molecular Tests"
+      ],
+      "how_to_reach": "Proceed to the Second Floor via the central elevator. Follow yellow 'Laboratory' signage to the South Wing. Sample collection counters open from 06:30 AM.",
+      "timings": "06:30 - 21:00 (Daily)",
+      "contact": "+91 484 300 5020"
+    },
+    "icu": {
+      "id": "icu",
+      "name": "Intensive Care Units (ICU)",
+      "floor": "Fourth Floor",
+      "description": "The Fourth Floor houses all critical care units including MICU, SICU, CICU, NICU, and PICU with a combined capacity of 65 monitored beds. Each unit is staffed by dedicated intensivists, trained ICU nurses, and supported by 24x7 respiratory therapy and pharmacy services.",
+      "units": [
+        { "name": "Medical ICU (MICU)", "beds": 20 },
+        { "name": "Surgical ICU (SICU)", "beds": 15 },
+        { "name": "Cardiac ICU (CICU)", "beds": 12 },
+        { "name": "Neonatal ICU (NICU)", "beds": 10 },
+        { "name": "Paediatric ICU (PICU)", "beds": 8 }
+      ],
+      "how_to_reach": "Take the elevator to the Fourth Floor. ICU visitor passes are issued at the Fourth Floor nursing station. Visiting hours: 10:00 - 12:00 and 16:00 - 18:00.",
+      "contact": "+91 484 300 5040"
+    },
+    "pharmacy": {
+      "id": "pharmacy",
+      "name": "Pharmacy",
+      "floor": "Ground Floor, Main Lobby (adjacent to OPD Registration)",
+      "description": "MediVista's in-house pharmacy stocks over 5,000 branded and generic medications, surgical consumables, and medical equipment. A dedicated inpatient pharmacy on the Fourth Floor serves ICU and ward patients. Home delivery is available within a 15 km radius.",
+      "how_to_reach": "Located on the Ground Floor, immediately to the left of the main OPD registration counter. Look for the green 'Pharmacy' signboard near the main lobby.",
+      "timings": "07:00 - 22:00 (Daily)",
+      "contact": "+91 484 300 5030"
+    },
+    "insurance": {
+      "id": "insurance",
+      "name": "Insurance & TPA Helpdesk",
+      "floor": "Ground Floor, Billing Section",
+      "description": "MediVista is empanelled with over 40 insurance companies and all major TPAs for cashless treatment. The helpdesk assists patients with pre-authorization, claim submission, discharge summaries, and reimbursement documentation.",
+      "empanelled_insurers": [
+        "Star Health Insurance",
+        "New India Assurance",
+        "United India Insurance",
+        "HDFC ERGO",
+        "Bajaj Allianz",
+        "Medi Assist TPA",
+        "MD India TPA",
+        "ECHS & CGHS"
+      ],
+      "how_to_reach": "Located at the Ground Floor Billing Section, to the right of the main pharmacy. Follow 'Insurance & Billing' signage from the main entrance.",
+      "timings": "08:00 - 20:00 (Mon-Sat), 09:00 - 14:00 (Sunday)",
+      "contact": "+91 484 300 5050"
+    },
+    "appointments": {
+      "id": "appointments",
+      "name": "Appointment Booking",
+      "description": "Appointments with specialist doctors at MediVista can be booked through multiple channels: the hospital website, the MediVista mobile app, the 24x7 call centre, WhatsApp, or by visiting the OPD Registration counter in person.",
+      "channels": [
+        {
+          "method": "Phone",
+          "detail": "+91 484 300 5000 (24x7 Call Centre)"
+        },
+        {
+          "method": "Website",
+          "detail": "https://www.medivistahospital.in/appointments"
+        },
+        {
+          "method": "Mobile App",
+          "detail": "MediVista App (Available on iOS and Android)"
+        },
+        {
+          "method": "WhatsApp",
+          "detail": "+91 98460 05000"
+        },
+        {
+          "method": "In-person",
+          "detail": "OPD Registration Counter, Ground Floor, 08:00 - 19:00"
+        }
+      ],
+      "note": "Online appointments are confirmed within 30 minutes. Walk-in consultations are accepted subject to doctor availability. Token system is used for queue management."
+    }
+  },
+
+  "facilities": {
+    "restrooms": [
+      {
+        "id": "RR1",
+        "location": "Ground Floor, near Main Lobby",
+        "type": "Male & Female",
+        "accessible": true
+      },
+      {
+        "id": "RR2",
+        "location": "Each floor, adjacent to elevator lobby",
+        "type": "Male & Female",
+        "accessible": true
+      },
+      {
+        "id": "RR3",
+        "location": "Emergency Wing, Ground Floor",
+        "type": "Unisex",
+        "accessible": true
+      }
+    ],
+    "helpdesks": [
+      {
+        "id": "HD1",
+        "location": "Main Lobby, Ground Floor",
+        "services": ["Patient Registration", "Visitor Passes", "General Information", "Wheelchair Assistance"]
+      },
+      {
+        "id": "HD2",
+        "location": "Billing Section, Ground Floor",
+        "services": ["Bill Payment", "Insurance & TPA", "Discharge Processing", "Medical Records"]
+      },
+      {
+        "id": "HD3",
+        "location": "Fourth Floor, ICU Waiting Area",
+        "services": ["ICU Patient Updates", "Visitor Passes", "Counselling Support"]
+      }
+    ],
+    "food_and_beverage": [
+      {
+        "id": "FB1",
+        "location": "Hospital Cafeteria, Ground Floor (South Wing)",
+        "services": ["Breakfast", "Lunch", "Dinner", "Beverages", "Diabetic-Friendly Menu"]
+      },
+      {
+        "id": "FB2",
+        "location": "Juice Bar, Ground Floor Lobby",
+        "services": ["Fresh Juices", "Health Drinks", "Light Snacks"]
+      },
+      {
+        "id": "FB3",
+        "location": "Patient Room Service (Inpatient Wards)",
+        "services": ["Customised Dietician-approved Meals", "Special Diets on Request"]
+      }
+    ],
+    "emergency_services": [
+      {
+        "id": "EM1",
+        "location": "Emergency Department, Ground Floor East Wing",
+        "staffed_by": "Emergency Physicians, Trauma Nurses, Paramedics",
+        "equipment": ["Defibrillators", "Ventilators", "Trauma Bays", "Crash Cart", "Emergency OT access"]
+      },
+      {
+        "id": "EM2",
+        "location": "Ambulance Bay, East Side Entrance",
+        "available_24x7": true,
+        "fleet": "4 Advanced Life Support (ALS) Ambulances, 2 Basic Life Support (BLS) Ambulances"
+      }
+    ],
+    "other": [
+      {
+        "id": "OT1",
+        "name": "ATM",
+        "location": "Ground Floor, near Main Entrance"
+      },
+      {
+        "id": "OT2",
+        "name": "Medical Records Office",
+        "location": "Ground Floor, Billing Section",
+        "timings": "09:00 - 17:00 (Mon-Sat)"
+      },
+      {
+        "id": "OT3",
+        "name": "Prayer Room / Chapel",
+        "location": "First Floor, West Wing"
+      },
+      {
+        "id": "OT4",
+        "name": "Free Wi-Fi",
+        "location": "Available throughout the hospital",
+        "network": "MediVista_Guest"
+      },
+      {
+        "id": "OT5",
+        "name": "Parking",
+        "location": "Basement and Open Parking, West Side",
+        "capacity": 300,
+        "fees": "First 2 hours free for OPD patients, nominal charges thereafter"
+      }
+    ]
+  },
+
+  "specialties": [
+    { "id": "SP01", "name": "Cardiology & Cardiac Surgery", "floor": "First Floor", "head": "Dr. Arun Pillai" },
+    { "id": "SP02", "name": "Neurology & Neurosurgery", "floor": "First Floor", "head": "Dr. Meera Varghese" },
+    { "id": "SP03", "name": "Orthopaedics & Joint Replacement", "floor": "First Floor", "head": "Dr. Sanjay Kumar" },
+    { "id": "SP04", "name": "Gastroenterology & Hepatology", "floor": "First Floor", "head": "Dr. Rajan Nair" },
+    { "id": "SP05", "name": "Obstetrics & Gynaecology", "floor": "Second Floor", "head": "Dr. Asha Krishnan" },
+    { "id": "SP06", "name": "Paediatrics & Neonatology", "floor": "Second Floor", "head": "Dr. Thomas George" },
+    { "id": "SP07", "name": "Endocrinology & Diabetes", "floor": "Second Floor", "head": "Dr. Divya Menon" },
+    { "id": "SP08", "name": "Pulmonology & Respiratory Medicine", "floor": "Second Floor", "head": "Dr. Harikumar R." },
+    { "id": "SP09", "name": "Oncology & Cancer Care", "floor": "Sixth Floor", "head": "Dr. Nisha Chandran" },
+    { "id": "SP10", "name": "Urology & Nephrology", "floor": "First Floor", "head": "Dr. Prakash Iyer" },
+    { "id": "SP11", "name": "ENT (Ear, Nose & Throat)", "floor": "First Floor", "head": "Dr. Sunil Babu" },
+    { "id": "SP12", "name": "Ophthalmology", "floor": "First Floor", "head": "Dr. Rekha Mohan" },
+    { "id": "SP13", "name": "Dermatology & Cosmetology", "floor": "First Floor", "head": "Dr. Ananya Das" },
+    { "id": "SP14", "name": "Psychiatry & Mental Health", "floor": "Second Floor", "head": "Dr. Vikram Nambiar" },
+    { "id": "SP15", "name": "Physiotherapy & Rehabilitation", "floor": "Fifth Floor", "head": "Mr. Jobin Mathew" }
+  ],
+
+  "transportation": {
+    "nearest_airport": {
+      "name": "Cochin International Airport (COK)",
+      "distance_km": 28,
+      "transfer_time_min": 40
+    },
+    "nearest_railway": {
+      "name": "Ernakulam South Railway Station",
+      "distance_km": 4,
+      "transfer_time_min": 12
+    },
+    "nearest_metro": {
+      "name": "Kadavanthra Metro Station (Kochi Metro)",
+      "distance_km": 1.2,
+      "transfer_time_min": 5
+    },
+    "parking": {
+      "onsite": true,
+      "capacity": 300,
+      "fees": "First 2 hours free for OPD patients",
+      "overflow": "Additional parking at adjacent MediVista Annexe Lot"
+    },
+    "drop_off_points": [
+      {
+        "id": "D1",
+        "location": "Main Entrance, NH-66 Bypass",
+        "description": "General patient and visitor drop-off with wheelchair access."
+      },
+      {
+        "id": "D2",
+        "location": "Emergency Entrance, East Wing",
+        "description": "Ambulance and emergency vehicle bay, accessible 24x7."
+      }
+    ]
+  }
+}

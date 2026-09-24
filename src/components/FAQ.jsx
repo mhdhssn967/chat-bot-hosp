@@ -1,15 +1,15 @@
+import { Activity, Ambulance, CalendarCheck, CreditCard, Pill, ScanLine, Stethoscope, TestTube } from "lucide-react";
 import React from "react";
-import { WashingMachine, CreditCard, Smartphone, Tv, Apple, RefreshCw, Gamepad2, Volume2 } from "lucide-react";
 
 const showroomFAQs = [
-  { id: 1, question: "Where are the large home appliances, like washing machines and refrigerators?", Icon: WashingMachine },
-  { id: 2, question: "I need a gaming laptop. What brands and options do you have?", Icon: CreditCard },
-  { id: 3, question: "Which floor has the accessories for mobile phones and laptops?", Icon: Smartphone },
-  { id: 4, question: "Where can I compare different types of televisions?", Icon: Tv },
-  { id: 5, question: "Where are the Apple products located?", Icon: Apple },
-  { id: 6, question: "I have an old phone. Do you accept offer exchange discounts?", Icon: RefreshCw },
-  { id: 7, question: "Do you offer any payment options like EMI or have exchange offers?", Icon: Gamepad2 },
-  { id: 8, question: "I'm interested in a soundbar for my TV. Where should I look?", Icon: Volume2 },
+  { id: 1, question: "Where is the Outpatient (OP) consultation area located?", Icon: Stethoscope },
+  { id: 2, question: "How can I book an appointment with a specialist doctor?", Icon: CalendarCheck },
+  { id: 3, question: "Where is the Radiology department for X-rays and scans?", Icon: ScanLine },
+  { id: 4, question: "Where can I find the Laboratory for blood tests?", Icon: TestTube },
+  { id: 5, question: "Which floor has the ICU and critical care units?", Icon: Activity },
+  { id: 6, question: "Where is the Pharmacy to collect prescribed medicines?", Icon: Pill },
+  { id: 7, question: "Do you offer cashless insurance or TPA support?", Icon: CreditCard },
+  { id: 8, question: "Where is the Emergency department located?", Icon: Ambulance },
 ];
 
 const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
@@ -49,7 +49,7 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
           style={{
             width: "3px",
             height: "20px",
-            background: "linear-gradient(180deg, #f97316, #ea580c)",
+            background: "#0eb48d",
             borderRadius: "2px",
           }}
         />
@@ -69,8 +69,7 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
           style={{
             flex: 1,
             height: "1px",
-            background:
-              "linear-gradient(90deg, rgba(249,115,22,0.4), transparent)",
+            background: "linear-gradient(90deg, rgba(14,180,141,0.4), transparent)",
           }}
         />
       </div>
@@ -85,7 +84,7 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
           backdropFilter: "blur(16px)",
           borderRadius: "16px",
           padding: "14px",
-          border: "1px solid rgba(249,115,22,0.15)",
+          border: "1px solid rgba(14,180,141,0.15)",
           boxShadow:
             "0 0 0 1px rgba(255,255,255,0.04) inset, 0 20px 60px rgba(0,0,0,0.6)",
         }}
@@ -119,7 +118,7 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
               bottom: "10%",
               width: "1px",
               background:
-                "linear-gradient(180deg, transparent, rgba(249,115,22,0.3), transparent)",
+                "linear-gradient(180deg, transparent, rgba(14,180,141,0.3), transparent)",
             }}
           />
           {rightFAQs.map((faq) => (
@@ -134,21 +133,19 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
       </div>
 
       <style>{`
-
-
         .faq-btn {
           transition: all 0.2s ease;
         }
 
         .faq-btn:hover:not(:disabled) {
-          background: linear-gradient(135deg, rgba(249,115,22,0.85), rgba(234,88,12,0.9)) !important;
-          border-color: rgba(249,115,22,0.8) !important;
+          background: linear-gradient(135deg, rgba(14,180,141,0.85), rgba(10,144,112,0.9)) !important;
+          border-color: rgba(14,180,141,0.8) !important;
           transform: translateY(-1px);
-          box-shadow: 0 6px 20px rgba(249,115,22,0.3), 0 0 0 1px rgba(249,115,22,0.4) !important;
+          box-shadow: 0 6px 20px rgba(14,180,141,0.3), 0 0 0 1px rgba(14,180,141,0.4) !important;
         }
 
         .faq-btn:hover:not(:disabled) .faq-icon {
-          background: rgba(255,255,255,0.2) !important;
+          background: #0a9070 !important;
         }
 
         .faq-btn:hover:not(:disabled) .faq-text {
@@ -170,55 +167,55 @@ const FAQ = ({ handleAsk, setShowShowcase, loading }) => {
 const FAQButton = ({ faq, loading, onClick }) => {
   const { Icon } = faq;
   return (
-  <button
-    className="faq-btn"
-    disabled={loading}
-    onClick={() => onClick(faq.question)}
-    style={{
-      display: "flex",
-      alignItems: "flex-start",
-      gap: "10px",
-      textAlign: "left",
-      background: "rgba(255,255,255,0.04)",
-      border: "1px solid rgba(255,255,255,0.07)",
-      borderRadius: "10px",
-      padding: "10px 12px",
-      cursor: loading ? "not-allowed" : "pointer",
-      opacity: loading ? 0.3 : 1,
-      width: "100%",
-      boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
-    }}
-  >
-    <span
-      className="faq-icon"
+    <button
+      className="faq-btn"
+      disabled={loading}
+      onClick={() => onClick(faq.question)}
       style={{
         display: "flex",
-        alignItems: "center",
-        justifyContent: "center",
-        minWidth: "28px",
-        height: "28px",
-        background: "rgba(249,115,22,0.15)",
-        borderRadius: "7px",
-        transition: "background 0.2s ease",
-        color: "#f97316",
+        alignItems: "flex-start",
+        gap: "10px",
+        textAlign: "left",
+        background: "rgba(255,255,255,0.04)",
+        border: "1px solid rgba(255,255,255,0.07)",
+        borderRadius: "10px",
+        padding: "10px 12px",
+        cursor: loading ? "not-allowed" : "pointer",
+        opacity: loading ? 0.3 : 1,
+        width: "100%",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.2)",
       }}
     >
-      <Icon size={15} strokeWidth={2} />
-    </span>
-    <span
-      className="faq-text"
-      style={{
-        color: "#cbd5e1",
-        fontSize: "15px",
-        fontWeight: 500,
-        lineHeight: "1.4",
-        letterSpacing: "0.2px",
-        transition: "color 0.2s ease",
-      }}
-    >
-      {faq.question}
-    </span>
-  </button>
+      <span
+        className="faq-icon"
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          minWidth: "28px",
+          height: "28px",
+          background: "#0eb48d",
+          borderRadius: "7px",
+          transition: "background 0.2s ease",
+          color: "white",
+        }}
+      >
+        <Icon size={15} strokeWidth={2} />
+      </span>
+      <span
+        className="faq-text"
+        style={{
+          color: "#cbd5e1",
+          fontSize: "15px",
+          fontWeight: 500,
+          lineHeight: "1.4",
+          letterSpacing: "0.2px",
+          transition: "color 0.2s ease",
+        }}
+      >
+        {faq.question}
+      </span>
+    </button>
   );
 };
 

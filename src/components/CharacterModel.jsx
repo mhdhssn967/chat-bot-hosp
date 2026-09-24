@@ -2,8 +2,7 @@ import React, { useRef, useEffect, Suspense, useState } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
 import { useGLTF, OrbitControls, Html } from '@react-three/drei';
 import * as THREE from 'three';
-import SkySphere from './SkySphere';
-
+import { ContactShadows } from "@react-three/drei";
 const MODEL_PATH = '/robot.glb';
 
 const Model = ({ currentAction, loading }) => {
@@ -13,12 +12,25 @@ const Model = ({ currentAction, loading }) => {
   const actionsRef = useRef({});
   const activeActionRef = useRef();
 
-
-  useEffect(() => {
+useEffect(() => {
   scene.traverse((child) => {
-    if (child.isMesh) {
-      child.castShadow = true;
-      child.receiveShadow = false;
+    if (child.isMesh && child.material) {
+      const materials = Array.isArray(child.material)
+        ? child.material
+        : [child.material];
+
+      materials.forEach((mat) => {
+        if (mat.name === "Mat_Orange") {
+          mat.map = null; // remove texture if any
+          mat.color.set("rgb(61, 183, 240)"); // change to white
+          mat.needsUpdate = true;
+        }
+        if (mat.name === "Mat_Black") {
+          mat.map = null; // remove texture if any
+          mat.color.set("black"); // change to white
+          mat.needsUpdate = true;
+        }
+      });
     }
   });
 }, [scene]);
@@ -76,15 +88,15 @@ const Model = ({ currentAction, loading }) => {
       ref={modelRef}
       object={scene}
       scale={0.06}
-      position={[0, -2.4, 0]}
+      position={[0, -2.6, 0]}
       castShadow
     />
   );
 };
 
 const CharacterModel = ({ talking, background, wave, loading }) => {
-  const idleStates = ["idle1","idle2","idle5","idle6","idle7","idle8","idle9","idle10","idle11"];
-    // const idleStates = ["idle11"];
+  // const idleStates = ["idle1","idle2","idle5","idle6","idle7","idle8","idle9","idle10","idle11"];
+    const idleStates = ["idle5"];
 
   const talkStates = ["talk1","talk2","talk3","talk4","talk5","talk6"];
   const waveState = ["idle5"];
@@ -129,8 +141,8 @@ const CharacterModel = ({ talking, background, wave, loading }) => {
 
   return (
     <div className="w-full flex justify-center relative">
+    
       <div className="w-full max-w-[100vw] h-[80vh] relative">
-
         <Canvas
           shadows
           camera={{ position: [0, 0.9, 8] }}
@@ -138,15 +150,14 @@ const CharacterModel = ({ talking, background, wave, loading }) => {
         >
           {/* Soft shadow plane */}
           {/* Visible Debug Platform */}
-<mesh
-  rotation={[-Math.PI / 2, 0, 0]}
-  position={[0, -2.34, 0]} // match model Y first
-  receiveShadow
->
-  <planeGeometry args={[20, 20]} />
- <shadowMaterial transparent opacity={0.35} />
-
-</mesh>
+<ContactShadows
+  position={[0, -2.35, 0]}
+  opacity={0.65}     // softer
+  scale={8}
+  blur={1}           // more blur = less harsh
+  far={5}
+  color="#000000"
+/>
 
 
           {/* Ambient lighting */}
@@ -154,7 +165,7 @@ const CharacterModel = ({ talking, background, wave, loading }) => {
 
           {/* Directional */}
           <directionalLight
-            position={[-5, 10, 5]}
+            position={[-2, 10, 5]}
             intensity={1}
             castShadow
             shadow-mapSize-width={2048}
@@ -181,43 +192,56 @@ const CharacterModel = ({ talking, background, wave, loading }) => {
        {loading && (
   <div className="fixed top-120 left-45 z-100 animate-calloutIn">
 
-    {/* Outer Glow Ring */}
-    <div className="absolute inset-0 rounded-full bg-orange-500/20 blur-2xl animate-ping"></div>
+  {/* Outer Glow Ring */}
+  <div className="absolute inset-0 rounded-full blur-2xl animate-ping"
+    style={{ background: 'rgba(14,180,141,0.25)' }}></div>
 
-    {/* Main Bubble */}
-    <div className="relative w-50 h-20 flex justify-center items-center 
-      bg-gradient-to-br from-orange-400 to-orange-600
-      backdrop-blur-xl 
-      px-6 py-3 
-      rounded-full 
-      shadow-[0_0_40px_rgba(255,140,0,0.8)]
-      border border-orange-400/40
-      animate-[pulseScale_2s_ease-in-out_infinite]">
+  {/* Main Bubble */}
+  <div className="relative w-50 h-20 flex justify-center items-center 
+    backdrop-blur-xl 
+    px-6 py-3 
+    rounded-full 
+    border
+    animate-[pulseScale_2s_ease-in-out_infinite]"
+    style={{
+      background: 'linear-gradient(135deg, #0eb48d, #0a9070)',
+      boxShadow: '0 0 40px rgba(14,180,141,0.75), 0 0 80px rgba(249,115,22,0.15)',
+      borderColor: 'rgba(14,180,141,0.5)'
+    }}>
 
-      <div className="flex items-center gap-2 text-white text-lg font-medium tracking-wide">
-        Thinking
-        <span className="flex gap-1">
-          <span className="animate-bounce">.</span>
-          <span className="animate-bounce [animation-delay:150ms]">.</span>
-          <span className="animate-bounce [animation-delay:300ms]">.</span>
-        </span>
-      </div>
-
-      {/* Callout Circles */}
-      <div className="absolute -bottom-8 right-10 w-6 h-6 rounded-full 
-        bg-orange-500 border-2 border border-orange-400/40 shadow-[0_0_15px_rgba(255,140,0,0.8)] 
-        animate-pulse"></div>
-
-      <div className="absolute -bottom-12 right-6 w-4 h-4 rounded-full 
-        bg-orange-500 border border-orange-400/40 shadow-[0_0_12px_rgba(255,140,0,0.7)] 
-        animate-pulse"></div>
-
-      <div className="absolute -bottom-16 right-2 w-2.5 h-2.5 rounded-full 
-        bg-orange-500 border border-orange-400/40 shadow-[0_0_10px_rgba(255,140,0,0.7)] 
-        animate-pulse"></div>
-
+    <div className="flex items-center gap-2 text-white text-lg font-medium tracking-wide">
+      Thinking
+      <span className="flex gap-1">
+        <span className="animate-bounce">.</span>
+        <span className="animate-bounce [animation-delay:150ms]">.</span>
+        <span className="animate-bounce [animation-delay:300ms]">.</span>
+      </span>
     </div>
+
+    {/* Callout Circles */}
+    <div className="absolute -bottom-8 right-10 w-6 h-6 rounded-full border-2 animate-pulse"
+      style={{
+        background: '#0eb48d',
+        borderColor: 'rgba(14,180,141,0.4)',
+        boxShadow: '0 0 15px rgba(14,180,141,0.8)'
+      }}></div>
+
+    <div className="absolute -bottom-12 right-6 w-4 h-4 rounded-full border animate-pulse"
+      style={{
+        background: '#0eb48d',
+        borderColor: 'rgba(14,180,141,0.4)',
+        boxShadow: '0 0 12px rgba(14,180,141,0.7)'
+      }}></div>
+
+    <div className="absolute -bottom-16 right-2 w-2.5 h-2.5 rounded-full border animate-pulse"
+      style={{
+        background: '#0eb48d',
+        borderColor: 'rgba(14,180,141,0.4)',
+        boxShadow: '0 0 10px rgba(14,180,141,0.7)'
+      }}></div>
+
   </div>
+</div>
 )}
 
 

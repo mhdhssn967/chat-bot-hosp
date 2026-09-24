@@ -104,150 +104,219 @@ const Homepage = () => {
 
 const audioRef = useRef(null);
 
+const subtitleRef = useRef("");
+
 const handleAsk = async (questionToAsk) => {
+  setSubtitle("")
+  setLoading(true);
 
-  // 🔴 Force stop any ongoing speech immediately
-if (audioRef.current) {
-  audioRef.current.pause();
-  audioRef.current.currentTime = 0;
-  audioRef.current = null;
-  setTalking(false);
-}
-
-    console.log("asking");
-    console.log(questionToAsk);
-
-    setError(null);
-    if (!questionToAsk.trim()) {
-      setError("Please type your question");
-      return;
-    }
-
-    function cleanText(text) {
-      return (
-        text
-          // remove bold/italics markers
-          .replace(/\*\*(.*?)\*\*/g, "$1")
-          .replace(/\*(.*?)\*/g, "$1")
-          // remove headings like ### Heading
-          .replace(/#+\s/g, "")
-          // remove inline code
-          .replace(/`{1,3}(.*?)`{1,3}/g, "$1")
-          // remove links but keep text
-          .replace(/\[(.*?)\]\(.*?\)/g, "$1")
-          // remove emojis (all unicode emoji ranges)
-          .replace(/[\u{1F600}-\u{1F64F}]/gu, "") 
-          .replace(/[\u{1F300}-\u{1F5FF}]/gu, "") 
-          .replace(/[\u{1F680}-\u{1F6FF}]/gu, "") 
-          .replace(/[\u{2600}-\u{26FF}]/gu, "") 
-          .replace(/[\u{2700}-\u{27BF}]/gu, "") 
-          // trim extra spaces
-          .replace(/\s{2,}/g, " ")
-          .trim()
-      );
-    }
-
-    async function playTTS(text) {
-  console.log("GCP service playing TTS");
-
-  const cleanedText = cleanText(text);
-  console.log("Cleaned text:", cleanedText);
-
-  try {
-    // 🔴 STOP any currently playing audio
-    if (audioRef.current) {
-      audioRef.current.pause();
-      audioRef.current.currentTime = 0;
-      audioRef.current = null;
-    }
-
-    setTalking(true);
-
-    let voiceName;
-    let languageCode;
-
-    switch (language.toLowerCase()) {
-      case "malayalam":
-        languageCode = "ml-IN";
-        voiceName = "ml-IN-Wavenet-A";
-        break;
-      case "hindi":
-        languageCode = "hi-IN";
-        voiceName = "hi-IN-Wavenet-A";
-        break;
-      case "arabic":
-        languageCode = "ar-XA";
-        voiceName = "ar-XA-Chirp3-HD-Achernar";
-        break;
-      case "english":
-      default:
-        languageCode = "en-US";
-        voiceName = "en-US-Wavenet-F";
-        break;
-    }
-
-    const resp = await fetch(
-      "https://oqulix-chat-server.onrender.com/speak",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: cleanedText,
-          languageCode,
-          voiceName,
-        }),
-      }
-    );
-
-    if (!resp.ok) throw new Error("TTS request failed");
-
-    const buf = await resp.arrayBuffer();
-    const blob = new Blob([buf], { type: "audio/mpeg" });
-    const url = URL.createObjectURL(blob);
-
-    const audio = new Audio(url);
-    audioRef.current = audio; // 🔵 store reference
-
-    audio.onplay = () => setTalking(true);
-
-    audio.onended = () => {
-      setTalking(false);
-      setIsListening(true);
-      audioRef.current = null;
-    };
-
-    audio.onerror = () => {
-      setTalking(false);
-      audioRef.current = null;
-    };
-
-    await audio.play();
-  } catch (err) {
-    console.error("Error in playTTS:", err);
+  if (audioRef.current) {
+    audioRef.current.pause();
+    audioRef.current.currentTime = 0;
+    audioRef.current = null;
     setTalking(false);
   }
-}
 
-    // add user message to chat
-    setChat((p) => [...p, { role: "user", text: questionToAsk }]);
-    setLoading(true);
+  console.log("asking");
+  console.log(questionToAsk);
+
+  setError(null);
+  if (!questionToAsk.trim()) {
+    setError("Please type your question");
+    return;
+  }
+
+  function cleanText(text) {
+    return (
+      text
+        .replace(/\*\*(.*?)\*\*/g, "$1")
+        .replace(/\*(.*?)\*/g, "$1")
+        .replace(/#+\s/g, "")
+        .replace(/`{1,3}(.*?)`{1,3}/g, "$1")
+        .replace(/\[(.*?)\]\(.*?\)/g, "$1")
+        .replace(/[\u{1F600}-\u{1F64F}]/gu, "") 
+        .replace(/[\u{1F300}-\u{1F5FF}]/gu, "") 
+        .replace(/[\u{1F680}-\u{1F6FF}]/gu, "") 
+        .replace(/[\u{2600}-\u{26FF}]/gu, "") 
+        .replace(/[\u{2700}-\u{27BF}]/gu, "") 
+        .replace(/\s{2,}/g, " ")
+        .trim()
+    );
+  }
+
+  let sentenceBuffer = "";
+  let fullText = "";
+  let ttsQueue = [];
+  let isPlayingTTS = false;
+  let hasReceivedFirstChunk = false;
+
+  async function playTTSSentence(text) {
+    console.log("🔊 Playing sentence:", text);
+
+    const cleanedText = cleanText(text);
+    if (!cleanedText || cleanedText.length < 5) return;
+
     try {
-      console.log(language);
+      let voiceName;
+      let languageCode;
 
-      const resp = await askQuestion(questionToAsk, token, language, subtitle);
-      // expected: { question, answer, userId }
+      switch (language.toLowerCase()) {
+        case "malayalam":
+          languageCode = "ml-IN";
+          voiceName = "ml-IN-Wavenet-A";
+          break;
+        case "hindi":
+          languageCode = "hi-IN";
+          voiceName = "hi-IN-Wavenet-A";
+          break;
+        case "arabic":
+          languageCode = "ar-XA";
+          voiceName = "ar-XA-Chirp3-HD-Achernar";
+          break;
+        case "english":
+        default:
+          languageCode = "en-US";
+          voiceName = "en-US-Wavenet-F";
+          break;
+      }
 
-      const answer = resp?.answer ?? "No answer from server";
+      const resp = await fetch(
+        "https://oqulix-chat-server.onrender.com/speak",
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            text: cleanedText,
+            languageCode,
+            voiceName,
+          }),
+        }
+      );
 
-      setChat((p) => [...p, { role: "assistant", text: answer }]);
-      playTTS(answer);
-      setQuestion("");
+      if (!resp.ok) throw new Error("TTS request failed");
+
+      const buf = await resp.arrayBuffer();
+      const blob = new Blob([buf], { type: "audio/mpeg" });
+      const url = URL.createObjectURL(blob);
+
+      const audio = new Audio(url);
+      audioRef.current = audio;
+
+      audio.onplay = () => {
+        setTalking(true);
+        setSubtitle(text);
+      };
+
+      audio.onended = () => {
+        console.log("✅ Audio ended, queue length:", ttsQueue.length);
+        
+        if (ttsQueue.length > 0) {
+          const nextSentence = ttsQueue.shift();
+          playTTSSentence(nextSentence);
+        } else {
+          // ✅ STOP TALKING WHEN QUEUE IS EMPTY
+          console.log("🛑 No more sentences in queue. Stopping...");
+          setTalking(false);
+          setIsListening(true);
+          audioRef.current = null;
+          setLoading(false);
+          setSubtitle(fullText);
+        }
+      };
+
+      audio.onerror = (error) => {
+        console.error("Audio error:", error);
+        setTalking(false);
+        audioRef.current = null;
+      };
+
+      // ✅ Add timeout to prevent infinite talking
+      const timeoutId = setTimeout(() => {
+        console.warn("⚠️ Audio timeout - forcing stop");
+        if (audioRef.current) {
+          audioRef.current.pause();
+        }
+        setTalking(false);
+      }, 120000); // 2 minutes max
+
+      audio.addEventListener('ended', () => clearTimeout(timeoutId), { once: true });
+
+      await audio.play();
     } catch (err) {
-      setError(err.message || "Error getting answer");
-    } finally {
-      setLoading(false);
+      console.error("Error in playTTS:", err);
+      setTalking(false);
     }
+  }
+
+  const handleChunk = (chunk) => {
+    sentenceBuffer += chunk;
+    fullText += chunk;
+    
+    console.log("📝 Buffer:", sentenceBuffer);
+    
+    if (subtitleRef.current !== undefined) {
+      subtitleRef.current = fullText;
+    }
+
+    if (!hasReceivedFirstChunk) {
+      hasReceivedFirstChunk = true;
+      setLoading(false);
+      console.log("✅ First chunk received! Loading stopped.");
+    }
+
+    const sentenceRegex = /[.!?]+|\n/g;
+    let match;
+    let lastIndex = 0;
+
+    while ((match = sentenceRegex.exec(sentenceBuffer)) !== null) {
+      const sentence = sentenceBuffer.substring(lastIndex, match.index + match[0].length).trim();
+      
+      if (sentence) {
+        console.log("✅ Complete sentence:", sentence);
+        ttsQueue.push(sentence);
+
+        if (!isPlayingTTS) {
+          isPlayingTTS = true;
+          const firstSentence = ttsQueue.shift();
+          playTTSSentence(firstSentence);
+        }
+      }
+      
+      lastIndex = match.index + match[0].length;
+    }
+
+    sentenceBuffer = sentenceBuffer.substring(lastIndex);
   };
+
+  setChat((p) => [...p, { role: "user", text: questionToAsk }]);
+
+  try {
+    console.log(language);
+
+    const resp = await askQuestion(questionToAsk, token, language, subtitle, handleChunk);
+    const answer = resp?.answer ?? "No answer from server";
+
+    if (sentenceBuffer.trim()) {
+      console.log("✅ Final sentence:", sentenceBuffer);
+      ttsQueue.push(sentenceBuffer);
+      
+      if (!isPlayingTTS) {
+        isPlayingTTS = true;
+        const firstSentence = ttsQueue.shift();
+        playTTSSentence(firstSentence);
+      }
+    }
+
+    setChat((p) => [...p, { role: "assistant", text: answer }]);
+    
+    setQuestion("");
+  } catch (err) {
+    console.error("Error:", err);
+    setError(err.message || "Error getting answer");
+    setTalking(false);
+    setLoading(false);
+  }
+};
   function logoutUser() {
     const auth = getAuth();
     return signOut(auth)
@@ -362,22 +431,26 @@ if (audioRef.current) {
 
   return (
   <div className="h-screen w-screen  text-white flex flex-col overflow-hidden">
+    {/* <button className='bg-white p-6'>Refresh</button> */}
     
 
     {/* ================= HEADER ================= */}
-    <div className="bg-orange-500 px-8 py-5 flex items-center justify-between shadow-lg">
+    <div className="bg-white px-8 py-5 flex items-center justify-between shadow-lg">
 
-      <div className="flex items-center gap-4" style={{alignItems:'center'}}>
-        <img src="/myg.png" style={{width:'90px',borderRadius:'5px'}} alt="MYG Logo" className="h-12" />
-        <h1 className="text-3xl font-bold tracking-wide">
-          Assistant
+      <div className="flex items-end gap-4" >
+        {/* <img src="/asterlogo.png" style={{width:'120px',borderRadius:'5px'}} alt="MYG Logo"  /> */}
+        <h1 className="text-3xl font-bold tracking-wide text-blue-900">
+          Hospital Assistant
         </h1>
       </div>
 
 <div className="flex" style={{justifyContent:'right',gap:'30px'}}> 
   
+
   
-<a href="https://runner-jet.vercel.app/" className="h-10 w-28 flex justify-center bg-white text-orange-500 rounded-3xl" style={{alignItems:'center',fontWeight:'800'}}>Play Game</a>
+  <div className="flex" style={{justifyContent:'right',gap:'30px'}}> 
+  
+  
   
   <div className="flex flex-col gap-6 ">
 
@@ -390,20 +463,13 @@ if (audioRef.current) {
         onChange={handleCheckboxChange}
         className="w-5 h-5 accent-orange-500"
       />
-    </label>
-
-    <label className="flex items-center justify-between gap-3 text-lg">
-      <span>Camera</span>
-      <input
-        type="checkbox"
-        onChange={handleCameraCheckboxChange}
-        className="w-5 h-5 accent-orange-500"
-      />
     </label> */}
+
+    
 
     <select
       onChange={(e) => setlanguage(e.target.value)}
-      className="bg-orange-600 text-white px-2 py-2 rounded-xl text-sm w-25 focus:outline-none focus:ring-2 focus:ring-orange-500"
+      className="bg-teal-500 text-white px-2 py-2 rounded-xl text-sm w-25 focus:outline-none focus:ring-2 focus:ring-orange-500"
     >
       <option value="english">English</option>
       <option value="malayalam">Malayalam</option>
@@ -412,14 +478,24 @@ if (audioRef.current) {
     </select>
 
   </div>
+  <label className="flex items-center justify-between gap-3 text-lg">
+      <span className="text-teal-500">Camera</span>
+      <input
+        type="checkbox"
+        onChange={handleCameraCheckboxChange}
+        className="w-5 h-5 accent-orange-500"
+      />
+    </label>
 
 </div>
-      {/* <button
+
+</div>
+      <button
         onClick={logoutUser}
         className="bg-white text-orange-600 px-6 py-3 rounded-xl font-semibold hover:scale-105 transition"
       >
         Logout
-      </button> */}
+      </button>
 
       
     </div>
@@ -430,9 +506,9 @@ if (audioRef.current) {
  
 
   {/* RIGHT SIDE — FAQ */}
-  <div className="overflow-y-auto" >
+  {/* <div className="overflow-y-auto" >
     <FAQ loading={loading} handleAsk={handleAsk} setShowShowcase={setShowShowcase}/>
-  </div>
+  </div> */}
 
 </div>
 
@@ -469,7 +545,7 @@ if (audioRef.current) {
 <div
   style={{
     position: "fixed",
-    bottom: "50px",
+    bottom: "0px",
     width: "100%",
     zIndex: 50,
     fontFamily: "'Rajdhani', sans-serif",
@@ -484,11 +560,12 @@ if (audioRef.current) {
   {/* Glass Panel */}
   <div
     style={{
-      padding: "24px 24px",
-      background: "rgba(9,9,11,0.82)",
+      position: "relative",
+      padding: "20px 24px 44px 24px",
+      background: "rgba(9,9,11,0.85)",
       backdropFilter: "blur(20px)",
       borderTop: "1px solid rgba(249,115,22,0.18)",
-      boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",marginBottom:'20px'
+      boxShadow: "0 -8px 40px rgba(0,0,0,0.55)",
     }}
   >
     {/* Top orange gradient rule */}
@@ -497,7 +574,7 @@ if (audioRef.current) {
         height: "2px",
         marginBottom: "14px",
         background:
-          "linear-gradient(90deg, transparent, rgba(249,115,22,0.65) 30%, rgba(249,115,22,0.65) 70%, transparent)",
+          "linear-gradient(90deg, transparent, #0eb48d 30%, #0eb48d 70%, transparent)",
         borderRadius: "2px",
       }}
     />
@@ -547,27 +624,6 @@ if (audioRef.current) {
             e.target.style.boxShadow = "none";
           }}
         />
-        {/* Send icon inside input */}
-        <button
-          onClick={() => !loading && !talking && handleAsk(question)}
-          disabled={loading || talking}
-          style={{
-            position: "absolute",
-            right: "12px",
-            top: "50%",
-            transform: "translateY(-50%)",
-            background: "none",
-            border: "none",
-            padding: "4px",
-            cursor: loading || talking ? "not-allowed" : "pointer",
-            color: question.trim() ? "#f97316" : "rgba(255,255,255,0.25)",
-            display: "flex",
-            alignItems: "center",
-            transition: "color 0.2s",
-          }}
-        >
-          <Send size={18} strokeWidth={2} />
-        </button>
       </div>
 
       {/* Ask Button */}
@@ -585,7 +641,7 @@ if (audioRef.current) {
           background:
             loading || talking
               ? "rgba(255,255,255,0.08)"
-              : "linear-gradient(135deg, #f97316, #ea580c)",
+              : "#0eb48d",
           border: "none",
           borderRadius: "14px",
           cursor: loading || talking ? "not-allowed" : "pointer",
@@ -656,47 +712,126 @@ if (audioRef.current) {
         {error}
       </p>
     )}
+
+    {/* Powered by OQULIX */}
+    <Oq />
   </div>
 
   {/* ================= SUBTITLES ================= */}
-  {subtitle && subtitle.length > 0 && !loading && (
+ {subtitle && subtitle.length > 0 && !loading && (
+  <div
+    className="fixed z-10"
+    style={{ 
+      top: "480px", 
+      left: "32px", 
+      maxWidth: "360px",
+      animation: "slideInUp 0.5s ease-out forwards"
+    }}
+    data-subtitle="true"
+  >
+    {/* Outer Glow - Pulsing */}
     <div
-      className="fixed z-10 animate-calloutIn"
-      style={{ top: "480px", left: "32px", maxWidth: "360px" }}
+      style={{
+        position: "absolute",
+        inset: 0,
+        borderRadius: "18px",
+        background: "rgba(14,180,141,0.22)",
+        filter: "blur(22px)",
+        animation: "pulse 2s ease-in-out infinite"
+      }}
+    />
+    
+    {/* Main Bubble - Floating */}
+    <div
+      style={{
+        position: "relative",
+        background:
+          "linear-gradient(135deg, rgba(14,180,141,0.82), rgba(10,144,112,0.88))",
+        color: "#fff",
+        fontSize: "13px",
+        lineHeight: 1.55,
+        padding: "12px 18px",
+        borderRadius: "18px",
+        border: "1px solid rgba(14,180,141,0.4)",
+        boxShadow:
+          "0 0 32px rgba(14,180,141,0.5), 0 4px 16px rgba(0,0,0,0.5)",
+        zIndex: 20,
+        animation: "float 3s ease-in-out infinite",
+        backdropFilter: "blur(10px)",
+      }}
     >
-      {/* Outer Glow */}
-      <div
-        style={{
-          position: "absolute",
-          inset: 0,
-          borderRadius: "18px",
-          background: "rgba(249,115,22,0.22)",
-          filter: "blur(22px)",
-        }}
-      />
-      {/* Main Bubble */}
-      <div
-        style={{
-          position: "relative",
-          background:
-            "linear-gradient(135deg, rgba(249,115,22,0.82), rgba(194,65,12,0.88))",
-          color: "#fff",
-          fontSize: "13px",
-          lineHeight: 1.55,
-          padding: "12px 18px",
-          borderRadius: "18px",
-          border: "1px solid rgba(251,146,60,0.4)",
-          boxShadow:
-            "0 0 32px rgba(249,115,22,0.5), 0 4px 16px rgba(0,0,0,0.5)",
-          zIndex: 20,
-        }}
-      >
-        <ReactMarkdown>
-          {subtitle.length > 0 ? displaySubtitle : " "}
-        </ReactMarkdown>
-      </div>
+      <ReactMarkdown>
+        {subtitleRef.current}
+      </ReactMarkdown>
     </div>
-  )}
+
+    {/* Animated border glow */}
+    <div
+      style={{
+        position: "absolute",
+        inset: "-2px",
+        borderRadius: "18px",
+        background: "linear-gradient(45deg, rgba(14,180,141,0.5), rgba(20,210,160,0.3), rgba(14,180,141,0.5))",
+        backgroundSize: "200% 200%",
+        animation: "gradientShift 3s ease infinite",
+        zIndex: -1,
+        opacity: 0.6
+      }}
+    />
+
+    <style>{`
+      @keyframes slideInUp {
+        from {
+          opacity: 0;
+          transform: translateY(30px) scale(0.95);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0) scale(1);
+        }
+      }
+
+      @keyframes float {
+        0%, 100% {
+          transform: translateY(0px);
+        }
+        50% {
+          transform: translateY(-10px);
+        }
+      }
+
+      @keyframes pulse {
+        0%, 100% {
+          opacity: 0.4;
+        }
+        50% {
+          opacity: 0.8;
+        }
+      }
+
+      @keyframes gradientShift {
+        0% {
+          backgroundPosition: 0% 50%;
+        }
+        50% {
+          backgroundPosition: 100% 50%;
+        }
+        100% {
+          backgroundPosition: 0% 50%;
+        }
+      }
+
+      @keyframes typewriter {
+        from {
+          width: 0;
+        }
+        to {
+          width: 100%;
+        }
+      }
+    `}</style>
+  </div>
+)}
 
   <style>{`
     @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@400;500;600;700&display=swap');
@@ -709,7 +844,6 @@ if (audioRef.current) {
 
 
 
-    {/* ================= CAMERA ================= */}
     {cameraDetection && (
       <div className="absolute bottom-6 left-6">
         <WaveDetector
@@ -719,7 +853,6 @@ if (audioRef.current) {
         />
       </div>
     )}
-<Oq/>
   </div>
 );
 }
